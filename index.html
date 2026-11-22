@@ -382,7 +382,7 @@ footer{max-width:960px;margin:auto;padding:4px max(4vw,12px) 24px;font-size:13px
  </div>
 </section>
 </main>
-<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.7</footer>
+<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.8</footer>
 
 <nav role="tablist">
  <button role="tab" data-t="bsa" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M7 21v-7l-2-1 2-5h10l2 5-2 1v7"/></svg>BSA</button>
@@ -534,9 +534,9 @@ function card(s,rows,lim){
  const body=s.it.map(([code,sz])=>`<tr><td>${sz}</td><td>${esc(label(code))}</td>${rows.map(([,q])=>{const r=dp(code,q),ok=r&&!r.over&&r.v<=lim;return `<td class="${ok?'':'over'}">${dpTxt(r)}${ok?' ✓':''}</td>`}).join('')}</tr>`).join('');
  return `<div class="rc"><div class="rch"><h3><span class="mk ${s.mk}">${s.mk==='E'?'エドワーズ':'泉工医科'}</span>${esc(s.name)}</h3>${imgTag(s.img,'sm')}</div>${lines}<details style="background:none;padding:0;margin-top:4px"><summary style="font-size:13px;min-height:32px;color:var(--mute)">全サイズのΔP（mmHg）</summary><table>${head}${body}</table></details></div>`;
 }
-function opts(group,sel){return SERIES[group].map(s=>`<optgroup label="${s.mk==='E'?'エドワーズ':'泉工医科'}｜${esc(s.name)}">${s.it.map(([c,sz])=>`<option value="${esc(c)}"${c===sel?' selected':''}>${sz}　${esc(label(c))}｜${esc(s.prod)}</option>`).join('')}</optgroup>`).join('')}
+function opts(group,sel){return '<option value="">選択してください</option>'+SERIES[group].map(s=>`<optgroup label="${s.mk==='E'?'エドワーズ':'泉工医科'}｜${esc(s.name)}">${s.it.map(([c,sz])=>`<option value="${esc(c)}"${c===sel?' selected':''}>${sz}　${esc(label(c))}｜${esc(s.prod)}</option>`).join('')}</optgroup>`).join('')}
 const SEL={selA:['art','EZS24A'],selD:['dual','TF2937O'],selS:['single','TF024L'],selI:['single','TF028L']};
-for(const [id,[g,d]] of Object.entries(SEL)){$(id).innerHTML=opts(g,store.get(id,d));$(id).addEventListener('change',e=>{store.set(id,e.target.value);renderCombo()})}
+for(const [id,[g]] of Object.entries(SEL)){$(id).innerHTML=opts(g,'');$(id).addEventListener('change',renderCombo)}
 
 
 function nice(v){const p=Math.pow(10,Math.floor(Math.log10(v))),m=v/p;return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p}
@@ -566,6 +566,7 @@ function detail(role,code,q,lim,col){
   <div class="kv"><div><span>流量</span><b>${f(q,2)}</b> L/min</div><div><span>ΔP</span><b>${dpTxt(r)}</b> mmHg</div><div><span>最大流量</span><b>${qTxt(qm)}</b> L/min${qm&&qm.est?'（推定）':''}</div></div>
   ${chartSVG(code,q,lim,col)}</div>`;
 }
+const cl=c=>c?sizeOf(c).sz+' '+label(c):'未選択';
 function circuit(m,a,d,s,i){
  const t=(x,y,txt,c,anchor='start')=>`<text x="${x}" y="${y}" font-size="16.5" font-weight="700" text-anchor="${anchor}" style="fill:${c};font-family:var(--jp)">${esc(txt)}</text>`;
  let v,lab;
@@ -573,13 +574,13 @@ function circuit(m,a,d,s,i){
   v=`<path d="M280 118 C250 160 160 150 96 124" stroke="url(#gVein)" stroke-width="9" fill="none" stroke-linecap="round"/>
    <path d="M96 124 C84 150 80 180 80 214" stroke="#2c5fd0" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="2 6"/>
    <circle cx="96" cy="124" r="9" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 3"/><circle cx="80" cy="212" r="7" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 3"/>`;
-  lab=t(180,298,'脱血（二段）：'+sizeOf(d).sz+' '+label(d),'var(--blue)','middle');
+  lab=t(180,298,'脱血（二段）：'+cl(d),'var(--blue)','middle');
  }else{
   v=`<path d="M82 34 C60 6 12 20 12 110 C12 200 40 236 150 236" stroke="url(#gVein)" stroke-width="7" fill="none" stroke-linecap="round"/>
    <path d="M80 220 C88 236 110 236 150 236" stroke="url(#gVein)" stroke-width="7" fill="none" stroke-linecap="round"/>
    <path d="M150 236 C230 236 262 150 280 118" stroke="url(#gVein)" stroke-width="9" fill="none" stroke-linecap="round"/>
    <circle cx="150" cy="236" r="6" fill="#1a3f9a"/><circle cx="82" cy="34" r="5" fill="#fff" stroke="#1a3f9a" stroke-width="3"/><circle cx="80" cy="220" r="5" fill="#fff" stroke="#1a3f9a" stroke-width="3"/>`;
-  lab=t(6,42,'SVC：'+sizeOf(s).sz+' '+label(s),'var(--blue)')+t(180,298,'IVC：'+sizeOf(i).sz+' '+label(i),'var(--blue)','middle');
+  lab=t(6,42,'SVC：'+cl(s),'var(--blue)')+t(180,298,'IVC：'+cl(i),'var(--blue)','middle');
  }
  return `<g transform="translate(0 46)"><use href="#heart" x="20" y="18" width="200" height="210"/>
   <path d="M152 32 C172 -4 272 -2 300 64" stroke="url(#gAorta)" stroke-width="8" fill="none" stroke-linecap="round"/>
@@ -587,24 +588,27 @@ function circuit(m,a,d,s,i){
   ${v}
   <g transform="translate(272 60) scale(.36)"><use href="#cpb" width="240" height="200"/></g>
   <text x="315" y="150" font-size="13" text-anchor="middle" style="fill:var(--mute);font-family:var(--jp)">人工心肺</text></g>
-  ${t(354,18,'送血：'+sizeOf(a).sz+' '+label(a),'var(--red)','end')}${lab}`;
+  ${t(354,18,'送血：'+cl(a),'var(--red)','end')}${lab}`;
 }
 function renderCombo(){
  const m=store.get('cnMode','dual'),la=n('cnArt'),lv=n('cnVen'),a=$('selA').value,d=$('selD').value,s=$('selS').value,i=$('selI').value;
  $('selDL').style.display=m==='dual'?'':'none';$('selSL').style.display=$('selIL').style.display=m==='single'?'':'none';
  $('circ').innerHTML=circuit(m,a,d,s,i);
- const qa=qmax(a,la);let qv,vtxt;
- if(m==='dual'){qv=qmax(d,lv);vtxt=`脱血（二段）`}
- else{const q1=qmax(s,lv),q2=qmax(i,lv);qv=q1&&q2?{q:q1.q+q2.q,ge:q1.ge||q2.ge,est:q1.est||q2.est,parts:[q1,q2]}:null;vtxt=`脱血（SVC ${qTxt(q1)}＋IVC ${qTxt(q2)}）`}
- if(!qa||!qv){$('maxq').innerHTML='<p class="note">上限値を入力してください。</p>';return}
- const sys=Math.min(qa.q,qv.q),bott=qa.q<=qv.q?'送血側':'脱血側',tg=n('cnFlow'),mx=Math.max(qa.q,qv.q,tg||0)*1.1;
- const bar=(cls,txt,r)=>`<div><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-bottom:4px"><span>${txt}</span><b class="dp">${r.ge?'≥ ':''}${f(r.q,2)} L/min${r.est?'（推定）':''}</b></div><div class="bar ${cls}"><i style="width:${Math.min(100,r.q/mx*100)}%"></i>${tg>0?`<div class="tg" style="left:${Math.min(99,tg/mx*100)}%"></div>`:''}</div></div>`;
- const ok=tg>0&&sys>=tg;
- const sysGe=(qa.q<=qv.q?qa:qv).ge;
- const qt=n('cnFlow'),sv=Math.min(Math.max(n('cnSvc'),0),100)/100,RED='#d0213c',BLU='#2a63d8';
- $('cdet').innerHTML=detail('送血',a,qt,la,RED)+(m==='dual'?detail('脱血（二段）',d,qt,lv,BLU):detail(`SVC 脱血（流量の${Math.round(sv*100)}%）`,s,qt*sv,lv,BLU)+detail(`IVC 脱血（流量の${Math.round(100-sv*100)}%）`,i,qt*(1-sv),lv,BLU));
+ const qa=a?qmax(a,la):null;let qv=null,vtxt;
+ if(m==='dual'){qv=d?qmax(d,lv):null;vtxt='脱血（二段）'}
+ else{const q1=s?qmax(s,lv):null,q2=i?qmax(i,lv):null;qv=q1&&q2?{q:q1.q+q2.q,ge:q1.ge||q2.ge,est:q1.est||q2.est}:null;vtxt=`脱血（SVC ${qTxt(q1)}＋IVC ${qTxt(q2)}）`}
+ const tg=n('cnFlow'),sv=Math.min(Math.max(n('cnSvc'),0),100)/100,RED='#d0213c',BLU='#2a63d8';
+ const cards=[a&&detail('送血',a,tg,la,RED)];
+ if(m==='dual')cards.push(d&&detail('脱血（二段）',d,tg,lv,BLU));
+ else cards.push(s&&detail(`SVC 脱血（流量の${Math.round(sv*100)}%）`,s,tg*sv,lv,BLU),i&&detail(`IVC 脱血（流量の${Math.round(100-sv*100)}%）`,i,tg*(1-sv),lv,BLU));
+ $('cdet').innerHTML=cards.filter(Boolean).join('')||'<p class="note">カニューレを選ぶと、商品名・画像・圧損グラフを表示します。</p>';
+ const mx=Math.max(qa?qa.q:0,qv?qv.q:0,tg||0)*1.1||1;
+ const bar=(cls,txt,r)=>`<div><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-bottom:4px"><span>${txt}</span><b class="dp">${r?(r.ge?'≥ ':'')+f(r.q,2)+' L/min'+(r.est?'（推定）':''):'未選択'}</b></div><div class="bar ${cls}"><i style="width:${r?Math.min(100,r.q/mx*100):0}%"></i>${tg>0&&r?`<div class="tg" style="left:${Math.min(99,tg/mx*100)}%"></div>`:''}</div></div>`;
+ const bars=bar('a',`送血（ΔP ${la}）`,qa)+bar('b',vtxt.replace('脱血',`脱血 ΔP ${lv}`),qv);
+ if(!qa||!qv){$('maxq').innerHTML=`<p class="note" style="margin:0">送血と脱血のカニューレを選ぶと、組み合わせの最大流量を表示します。</p>${bars}`;return}
+ const sys=Math.min(qa.q,qv.q),bott=qa.q<=qv.q?'送血側':'脱血側',ok=tg>0&&sys>=tg,sysGe=(qa.q<=qv.q?qa:qv).ge;
  $('maxq').innerHTML=`<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="note" style="margin:0">この組み合わせの最大流量</span><span style="font:700 clamp(34px,9vw,48px)/1 var(--num);color:var(--red)">${sysGe?'≥ ':''}${f(sys,2)}<span style="font-size:15px;color:var(--mute);margin-left:4px">L/min</span></span><span class="note" style="margin:0">律速：${bott}</span></div>
-  ${bar('a',`送血（ΔP ${la}）`,qa)}${bar('b',vtxt.replace('脱血',`脱血 ΔP ${lv}`).replace(/（ΔP/,'（ΔP'),qv)}
+  ${bars}
   ${tg>0?`<div class="verdict ${ok?'ok':'ng'}">${ok?'✓':'!'} 目標 ${f(tg,2)} L/min に対して ${ok?'余裕 '+f(sys-tg,2)+' L/min':f(tg-sys,2)+' L/min 不足'}（黒い線が目標）</div>`:''}`;
 }
 function renderCan(){
