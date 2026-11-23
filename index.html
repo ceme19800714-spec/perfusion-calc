@@ -517,7 +517,7 @@ footer{max-width:960px;margin:auto;padding:4px max(4vw,12px) 24px;font-size:13px
  </div>
 </section>
 </main>
-<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.10</footer>
+<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.11</footer>
 
 <nav role="tablist">
  <button role="tab" data-t="bsa" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M7 21v-7l-2-1 2-5h10l2 5-2 1v7"/></svg>BSA</button>
@@ -795,7 +795,7 @@ $('reset').addEventListener('click',()=>{drugs=JSON.parse(JSON.stringify(PRESET)
 
 const t0=store.get('tab','bsa');const tb=document.querySelector(`nav button[data-t="${t0}"]`);if(tb)tb.click();
 fillEditor();all();
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{$('offline').textContent='オフラインで使用できます'}).catch(()=>{$('offline').textContent='オフライン機能は無効（HTTPSで開いてください）'})}else{$('offline').textContent=''}
+if('serviceWorker' in navigator){let reloaded=false;const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloaded||!had)return;reloaded=true;location.reload()});navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update().catch(()=>{});return navigator.serviceWorker.ready}).then(()=>{$('offline').textContent='オフラインで使用できます'}).catch(()=>{$('offline').textContent='オフライン機能は無効（HTTPSで開いてください）'});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})})}else{$('offline').textContent=''}
 }
 </script>
 </body>
