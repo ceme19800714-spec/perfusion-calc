@@ -182,7 +182,7 @@ footer{max-width:960px;margin:auto;padding:4px max(4vw,12px) 24px;font-size:13px
   <linearGradient id="gAo" x1="0" x2="1"><stop offset="0" stop-color="#8c1626"/><stop offset=".3" stop-color="#e0485a"/><stop offset=".55" stop-color="#f27d89"/><stop offset="1" stop-color="#9c1a2c"/></linearGradient>
   <linearGradient id="gAoV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f27d89"/><stop offset=".5" stop-color="#d63a4e"/><stop offset="1" stop-color="#8c1626"/></linearGradient>
   <linearGradient id="gVC" x1="0" x2="1"><stop offset="0" stop-color="#23377f"/><stop offset=".35" stop-color="#5476d6"/><stop offset=".6" stop-color="#7f9ef0"/><stop offset="1" stop-color="#2a3f8f"/></linearGradient>
-  <linearGradient id="gPT" x1="0" x2="1"><stop offset="0" stop-color="#3a3f9a"/><stop offset=".45" stop-color="#7a7fe0"/><stop offset="1" stop-color="#34398c"/></linearGradient>
+  <linearGradient id="gPT" x1="0" x2="1"><stop offset="0" stop-color="#2c3480"/><stop offset=".45" stop-color="#5b67c4"/><stop offset="1" stop-color="#28306f"/></linearGradient>
   <linearGradient id="gFat" x1="0" x2="1"><stop offset="0" stop-color="#f2d27a"/><stop offset="1" stop-color="#d9a940"/></linearGradient>
   <linearGradient id="gCab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f9"/><stop offset=".55" stop-color="#d9dee6"/><stop offset="1" stop-color="#a9b1be"/></linearGradient>
   <linearGradient id="gCabS" x1="0" x2="1"><stop offset="0" stop-color="#8f98a6"/><stop offset=".08" stop-color="#e9edf2"/><stop offset=".92" stop-color="#dfe3ea"/><stop offset="1" stop-color="#8f98a6"/></linearGradient>
@@ -196,51 +196,56 @@ footer{max-width:960px;margin:auto;padding:4px max(4vw,12px) 24px;font-size:13px
   <linearGradient id="gBarrel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,.95)"/><stop offset=".35" stop-color="rgba(230,238,248,.7)"/><stop offset=".7" stop-color="rgba(200,212,230,.6)"/><stop offset="1" stop-color="rgba(160,175,200,.8)"/></linearGradient>
   <linearGradient id="gDrug" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3c4"/><stop offset="1" stop-color="#f0cf6a"/></linearGradient>
 
-  <!-- anatomical heart (anterior view) -->
+  <!-- anatomical heart (anterior view): apex to lower right, RA forms right border, RV anterior, LV left border -->
   <symbol id="heart" viewBox="0 0 200 210">
    <!-- descending aorta (behind) -->
-   <path d="M160 30 C176 40 178 60 174 96" stroke="#7c1322" stroke-width="18" fill="none" stroke-linecap="round"/>
-   <!-- right pulmonary artery behind aorta -->
-   <path d="M118 56 C100 54 86 58 76 66" stroke="#2f3483" stroke-width="12" fill="none" stroke-linecap="round"/>
-   <!-- arch branches -->
-   <path d="M116 22 C114 12 112 6 110 0" stroke="url(#gAo)" stroke-width="9" fill="none"/>
-   <path d="M133 15 C134 8 134 4 134 0" stroke="url(#gAo)" stroke-width="7.5" fill="none"/>
-   <path d="M148 17 C152 9 156 4 160 0" stroke="url(#gAo)" stroke-width="8" fill="none"/>
+   <path d="M156 26 C170 34 172 56 170 96" stroke="#7c1322" stroke-width="18" fill="none" stroke-linecap="round"/>
+   <!-- right pulmonary artery (behind ascending aorta) -->
+   <path d="M132 58 C112 56 92 58 76 64" stroke="#2f3483" stroke-width="12" fill="none" stroke-linecap="round"/>
+   <!-- arch branches: brachiocephalic, L common carotid, L subclavian -->
+   <path d="M110 20 C108 12 104 6 100 0" stroke="url(#gAo)" stroke-width="10" fill="none"/>
+   <path d="M128 13 C128 8 128 4 128 0" stroke="url(#gAo)" stroke-width="7" fill="none"/>
+   <path d="M144 15 C148 8 152 4 156 0" stroke="url(#gAo)" stroke-width="8" fill="none"/>
    <!-- SVC -->
-   <path d="M62 2 C62 30 63 60 66 92" stroke="url(#gVC)" stroke-width="21" fill="none"/>
-   <path d="M57 4 C57 30 58 58 60 86" stroke="#a9bff7" stroke-width="2.5" fill="none" opacity=".6"/>
+   <path d="M64 0 C64 28 65 54 68 84" stroke="url(#gVC)" stroke-width="22" fill="none"/>
+   <path d="M58 2 C58 28 59 52 61 78" stroke="#a9bff7" stroke-width="2.5" fill="none" opacity=".6"/>
    <!-- IVC -->
-   <path d="M58 210 C58 190 60 176 66 160" stroke="url(#gVC)" stroke-width="23" fill="none"/>
+   <path d="M58 210 C58 196 60 184 64 166" stroke="url(#gVC)" stroke-width="22" fill="none"/>
    <!-- ascending aorta + arch -->
-   <path d="M104 96 C100 70 102 44 114 30 C126 16 148 12 162 26 C168 32 170 40 168 50" stroke="url(#gAoV)" stroke-width="24" fill="none" stroke-linecap="round"/>
-   <path d="M98 88 C95 64 98 44 108 32 C118 22 134 16 150 19" stroke="#ffb3bc" stroke-width="3" fill="none" opacity=".55" stroke-linecap="round"/>
-   <!-- right atrium -->
-   <path d="M50 84 C32 96 30 134 46 154 C58 168 80 166 90 148 L94 100 C86 84 66 76 50 84Z" fill="url(#gRA)"/>
-   <path d="M66 84 C72 66 96 64 102 80 C104 90 94 98 84 96 C76 95 70 92 66 84Z" fill="#9a4058"/>
-   <path d="M70 82 C76 72 92 70 98 80" stroke="#c97a90" stroke-width="2" fill="none" opacity=".7"/>
-   <!-- ventricles -->
-   <path d="M88 96 C112 82 150 82 170 100 C186 118 182 152 166 174 C154 190 144 200 138 206 C120 196 98 176 88 154 C80 136 80 112 88 96Z" fill="url(#gMyo)"/>
-   <!-- right ventricle (anterior) -->
-   <path d="M90 98 C106 88 128 86 140 92 C138 128 140 168 138 204 C120 192 100 172 90 152 C84 134 84 112 90 98Z" fill="url(#gRV)" opacity=".92"/>
+   <path d="M102 94 C98 70 96 46 104 32 C114 16 140 10 156 22 C162 28 164 34 164 42" stroke="url(#gAoV)" stroke-width="24" fill="none" stroke-linecap="round"/>
+   <path d="M93 86 C90 64 90 46 98 34 C106 22 122 16 138 16" stroke="#ffb3bc" stroke-width="3" fill="none" opacity=".55" stroke-linecap="round"/>
+   <!-- right atrium (right border) -->
+   <path d="M66 74 C46 78 34 102 36 128 C38 150 48 166 66 172 C78 160 84 128 84 100 C82 86 76 78 66 74Z" fill="url(#gRA)"/>
+   <path d="M44 104 C40 120 42 140 50 154" stroke="#c97a90" stroke-width="2" fill="none" opacity=".5"/>
+   <!-- ventricular mass -->
+   <path d="M80 92 C102 84 138 84 160 92 C178 106 194 144 196 178 C196 194 188 202 178 200 C150 196 110 186 86 178 C72 174 64 168 62 166 C70 144 74 116 80 92Z" fill="url(#gMyo)"/>
+   <!-- right ventricle (anterior, lighter) -->
+   <path d="M82 94 C100 86 118 84 132 86 L146 94 C144 128 154 166 174 199 C146 194 110 186 86 178 C72 174 64 168 62 166 C70 146 76 118 82 94Z" fill="url(#gRV)" opacity=".9"/>
+   <!-- RV outflow (infundibulum) -->
+   <path d="M114 92 C116 80 124 70 134 66 L148 72 C144 82 142 90 142 96Z" fill="#c0454f"/>
+   <!-- left ventricle shading at left border -->
+   <path d="M160 92 C178 106 194 144 196 178 C196 192 190 200 182 200 C190 166 182 124 160 92Z" fill="#5a0f1a" opacity=".35"/>
+   <!-- pulmonary trunk: from RV outflow up and to the patient's left, bifurcating under the arch -->
+   <path d="M128 86 C129 74 133 64 141 57 C150 50 162 48 176 52" stroke="url(#gPT)" stroke-width="22" fill="none" stroke-linecap="round"/>
+   <path d="M122 80 C124 68 130 60 138 54" stroke="#b9bcff" stroke-width="2.4" fill="none" opacity=".55"/>
+   <!-- right atrial appendage over aortic root -->
+   <path d="M72 88 C74 74 90 68 102 76 C104 86 96 96 84 98 C78 98 74 94 72 88Z" fill="#9a4058"/>
+   <path d="M76 84 C82 74 94 72 100 78" stroke="#c97a90" stroke-width="2" fill="none" opacity=".7"/>
    <!-- left atrial appendage -->
-   <path d="M158 92 C170 80 188 86 184 100 C180 108 168 108 162 102Z" fill="#8a2236"/>
-   <path d="M164 90 C172 86 180 88 182 96" stroke="#c45b6d" stroke-width="1.5" fill="none"/>
-   <!-- pulmonary trunk (anterior) -->
-   <path d="M120 100 C118 82 122 64 132 54 C140 46 152 44 162 48" stroke="url(#gPT)" stroke-width="20" fill="none" stroke-linecap="round"/>
-   <path d="M114 94 C113 78 117 64 126 55" stroke="#b9bcff" stroke-width="2.5" fill="none" opacity=".55"/>
-   <!-- AV / interventricular grooves with fat -->
-   <path d="M92 100 C86 122 86 146 96 166 C106 184 122 198 138 206" stroke="url(#gFat)" stroke-width="7" fill="none" opacity=".75"/>
-   <path d="M140 96 C142 130 142 170 138 204" stroke="url(#gFat)" stroke-width="8" fill="none" opacity=".8"/>
-   <!-- coronary arteries -->
-   <path d="M100 98 C90 120 88 146 98 166 C108 184 122 196 136 204" stroke="#d6283d" stroke-width="2.6" fill="none"/>
-   <path d="M140 96 C142 130 142 170 138 204" stroke="#d6283d" stroke-width="2.8" fill="none"/>
-   <path d="M141 120 C150 126 160 130 168 128 M141 148 C150 154 158 160 164 162 M141 174 C148 178 152 184 154 188 M93 130 C100 134 108 134 114 132 M96 160 C104 162 110 160 116 156" stroke="#c8243a" stroke-width="1.6" fill="none"/>
-   <!-- coronary veins -->
-   <path d="M143 104 C144 136 145 168 141 200" stroke="#4a5bb8" stroke-width="1.4" fill="none" opacity=".7"/>
-   <!-- muscle sheen + shading -->
-   <path d="M100 112 C108 106 120 104 130 108 M98 128 C108 122 122 120 132 124 M100 146 C110 140 122 140 132 142" stroke="#f3a2a2" stroke-width="1.2" fill="none" opacity=".35"/>
-   <ellipse cx="112" cy="118" rx="16" ry="9" fill="#fff" opacity=".25" transform="rotate(-25 112 118)"/>
-   <ellipse cx="160" cy="140" rx="10" ry="26" fill="#3a0610" opacity=".25" transform="rotate(20 160 140)"/>
+   <path d="M156 84 C164 72 184 74 186 88 C186 98 174 100 164 96 C160 94 157 90 156 84Z" fill="#8a2236"/>
+   <path d="M162 80 C170 74 180 76 184 84" stroke="#c45b6d" stroke-width="1.5" fill="none"/>
+   <!-- grooves with epicardial fat -->
+   <path d="M98 96 C86 116 80 142 78 166 C82 176 100 182 126 188" stroke="url(#gFat)" stroke-width="7" fill="none" opacity=".75"/>
+   <path d="M150 96 C146 128 154 166 174 199" stroke="url(#gFat)" stroke-width="8" fill="none" opacity=".8"/>
+   <!-- RCA (right AV groove) and LAD (anterior interventricular groove) -->
+   <path d="M100 96 C88 116 82 142 80 166 C84 176 102 182 126 188" stroke="#d6283d" stroke-width="2.6" fill="none"/>
+   <path d="M150 96 C146 128 154 166 174 199" stroke="#d6283d" stroke-width="2.8" fill="none"/>
+   <path d="M150 116 C160 122 170 126 178 130 M151 138 C162 146 172 152 184 156 M157 162 C168 170 178 176 188 180 M82 128 C92 130 102 128 110 124 M80 152 C90 156 100 156 108 152 M150 120 C140 124 128 124 118 120" stroke="#c8243a" stroke-width="1.6" fill="none"/>
+   <!-- great cardiac vein -->
+   <path d="M154 98 C150 130 158 168 178 199" stroke="#4a5bb8" stroke-width="1.4" fill="none" opacity=".7"/>
+   <!-- sheen + shadow -->
+   <path d="M96 112 C106 106 120 104 132 108 M92 132 C104 126 120 124 134 128 M90 154 C104 148 120 148 136 152" stroke="#f3a2a2" stroke-width="1.2" fill="none" opacity=".35"/>
+   <ellipse cx="112" cy="120" rx="18" ry="9" fill="#fff" opacity=".22" transform="rotate(-15 112 120)"/>
   </symbol>
 
   <g id="rp">
@@ -512,7 +517,7 @@ footer{max-width:960px;margin:auto;padding:4px max(4vw,12px) 24px;font-size:13px
  </div>
 </section>
 </main>
-<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.9</footer>
+<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.10</footer>
 
 <nav role="tablist">
  <button role="tab" data-t="bsa" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M7 21v-7l-2-1 2-5h10l2 5-2 1v7"/></svg>BSA</button>
