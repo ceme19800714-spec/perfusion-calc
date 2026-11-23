@@ -1,5 +1,5 @@
 // 更新時は VERSION を上げる
-const VERSION='perfcalc-v2.11';
+const VERSION='perfcalc-v2.12';
 const FILES=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-512-maskable.png'];
 // install: always fetch fresh copies from the server (bypass HTTP cache)
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>Promise.all(FILES.map(u=>fetch(new Request(u,{cache:'reload'})).then(r=>{if(!r.ok)throw new Error(u);return c.put(u,r)})))).then(()=>self.skipWaiting()))});

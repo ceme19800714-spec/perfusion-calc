@@ -455,14 +455,14 @@ footer{max-width:960px;margin:auto;padding:4px max(4vw,12px) 24px;font-size:13px
   <div class="maxq" id="maxq"></div>
   <h3 style="font-size:15px;margin:18px 0 0">選択したカニューレと圧損グラフ</h3>
   <div class="cds" id="cdet"></div>
-  <p class="note">グラフの点＝現在の流量での位置、オレンジの破線＝ΔP上限、◆＝上限に達する流量（最大流量）。点線部分はカタログのグラフ範囲外の推定です。</p>
-  <p class="note">最大流量＝ΔPが上限に達する流量（カタログ曲線から算出）です。2本脱血では、SVC側とIVC側の最大流量の合計を脱血側の上限としています。「≥」はカタログのグラフ範囲内では上限に達しないこと（実際はそれ以上流せる可能性）を示します。</p>
+  <p class="note">グラフの点＝現在の流量での位置、オレンジの破線＝ΔP上限、◆＝上限に達する流量（最大流量）。グラフはカタログに掲載された流量範囲までを表示します（範囲外の推定はしません）。</p>
+  <p class="note">最大流量＝ΔPが上限に達する流量（カタログ曲線から算出）です。2本脱血では、SVC側とIVC側の最大流量の合計を脱血側の上限としています。「≥」はカタログのグラフ範囲内では上限に達しないことを示し、表示値はグラフ上の最大流量です。</p>
  </div>
 
  <div class="card"><h2><i></i>送血カニューレの推奨</h2><div class="rcards" id="cnArtOut"></div></div>
  <div class="card vb"><h2><i></i><span id="cnVenH">脱血カニューレの推奨</span></h2><div class="rcards" id="cnVenOut"></div></div>
  <div class="card"><details style="margin:0"><summary>判定方法と注意</summary>
-  <p class="note">推奨は、各シリーズで指定流量でのΔPが上限以下になる最小サイズです。ΔPはメーカーカタログのフローチャートの曲線から読み取った近似値です。グラフの範囲を超える流量は曲線から外挿した推定値で、「推定」と表示します。</p>
+  <p class="note">推奨は、各シリーズで指定流量でのΔPが上限以下になる最小サイズです。ΔPはメーカーカタログのフローチャートの曲線から読み取った近似値です。カタログのグラフ範囲を超える流量は計算せず「範囲外」と表示し、推奨の対象にもしません。</p>
   <p class="note">測定条件はメーカーごとに異なります（エドワーズ：水・室温、泉工医科：33w/w%グリセリン溶液・37℃）。そのため、メーカー間でΔPを直接比べることはできません。水で測定した値は、血液では実際より高くなる傾向があります。</p>
   <p class="note">上限値とSVC割合の初期値は一般的な目安です。施設の基準に合わせて変更してください。</p>
   <p class="note" style="margin-bottom:10px">参照：エドワーズ「Protection Cannulae」カタログ、泉工医科工業「フレックスメイト 体外循環用カニューレ総合カタログ」。TF3343OとTF3646Oはカタログで1本の曲線を共有しています。泉工医科の値はINKN／OUKN品番の曲線です。成人用のみを掲載しています。泉工医科はカタログの保険償還分類で「成人用」のサイズ、エドワーズは20Fr以上の脱血カニューレです。</p>
@@ -517,7 +517,7 @@ footer{max-width:960px;margin:auto;padding:4px max(4vw,12px) 24px;font-size:13px
  </div>
 </section>
 </main>
-<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.11</footer>
+<footer>計算の補助用です。臨床判断は必ず施設のプロトコルと検算で確認してください。入力値はこの端末のブラウザにだけ保存されます。<br><span id="offline">オフライン準備中…</span> ver 2.12</footer>
 
 <nav role="tablist">
  <button role="tab" data-t="bsa" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M7 21v-7l-2-1 2-5h10l2 5-2 1v7"/></svg>BSA</button>
@@ -648,25 +648,24 @@ function dp(code,q){
  const c=CURVES[code];if(!c||!(q>=0))return null;const p=c.p,L=p[p.length-1];
  if(q<=L[0]){for(let i=1;i<p.length;i++)if(q<=p[i][0]){const a=p[i-1],b=p[i];return{v:a[1]+(b[1]-a[1])*(q-a[0])/(b[0]-a[0])}}}
  if(c.top)return{v:c.ym,over:true};
- const m=p[Math.floor(p.length/2)];let k=Math.log(L[1]/Math.max(m[1],.01))/Math.log(L[0]/m[0]);if(!isFinite(k)||k<1)k=1.8;if(k>2.5)k=2.5;
- return{v:L[1]*Math.pow(q/L[0],k),est:true};
+ return{out:true,v:NaN,xmax:L[0]};
 }
-const dpTxt=r=>!r?'—':r.over?'>'+r.v:(r.v<10?r.v.toFixed(1):Math.round(r.v))+(r.est?'（推定）':'');
+const dpTxt=r=>!r?'—':r.out?'範囲外':r.over?'>'+r.v:(r.v<10?r.v.toFixed(1):Math.round(r.v));
 /* max flow where ΔP reaches lim */
 function qmax(code,lim){
  const c=CURVES[code];if(!c||!(lim>0))return null;const L=c.p[c.p.length-1];
- if(c.top&&lim>=c.ym)return{q:L[0],ge:true};
- const H=12,rh=dp(code,H);if(rh&&!rh.over&&rh.v<lim)return{q:H,ge:true,est:true};
- let lo=0,hi=H;for(let i=0;i<40;i++){const m=(lo+hi)/2,r=dp(code,m);if(r.over||r.v>lim)hi=m;else lo=m}
- return{q:lo,est:lo>L[0]+1e-6};
+ if(c.top){if(lim>c.ym+0.5)return{q:L[0],ge:true};if(lim>=L[1]-0.5)return{q:L[0]}}
+ else if(L[1]<lim)return{q:L[0],ge:true};
+ let lo=0,hi=L[0];for(let i=0;i<40;i++){const m=(lo+hi)/2,r=dp(code,m);if(r.over||r.v>lim)hi=m;else lo=m}
+ return{q:lo};
 }
 const qTxt=r=>!r?'—':`${r.ge?'≥ ':''}${f(r.q,2)}`;
-function pick(s,q,lim){for(const [code,sz] of s.it){const r=dp(code,q);if(r&&!r.over&&r.v<=lim)return{code,sz,r}}return null}
+function pick(s,q,lim){for(const [code,sz] of s.it){const r=dp(code,q);if(r&&!r.over&&!r.out&&r.v<=lim)return{code,sz,r}}return null}
 function card(s,rows,lim){
  const lines=rows.map(([pos,q])=>{const k=pick(s,q,lim);
-  return `<div class="rec">${pos?`<span class="pos">${pos}</span>`:''}${k?`<b>${k.sz}</b><span>${esc(label(k.code))}</span><span class="dp">ΔP ${dpTxt(k.r)}</span>`:'<span class="note" style="margin:0">該当なし（最大サイズでも上限超え）</span>'}${pos?`<span class="dp" style="color:var(--mute)">${f(q,2)} L/min</span>`:''}</div>`}).join('');
+  return `<div class="rec">${pos?`<span class="pos">${pos}</span>`:''}${k?`<b>${k.sz}</b><span>${esc(label(k.code))}</span><span class="dp">ΔP ${dpTxt(k.r)}</span>`:'<span class="note" style="margin:0">該当なし（上限超え、またはカタログ範囲外）</span>'}${pos?`<span class="dp" style="color:var(--mute)">${f(q,2)} L/min</span>`:''}</div>`}).join('');
  const head=`<tr><th>サイズ</th><th>品番</th>${rows.map(([pos])=>`<th>${pos||'ΔP'}</th>`).join('')}</tr>`;
- const body=s.it.map(([code,sz])=>`<tr><td>${sz}</td><td>${esc(label(code))}</td>${rows.map(([,q])=>{const r=dp(code,q),ok=r&&!r.over&&r.v<=lim;return `<td class="${ok?'':'over'}">${dpTxt(r)}${ok?' ✓':''}</td>`}).join('')}</tr>`).join('');
+ const body=s.it.map(([code,sz])=>`<tr><td>${sz}</td><td>${esc(label(code))}</td>${rows.map(([,q])=>{const r=dp(code,q),ok=r&&!r.over&&!r.out&&r.v<=lim;return `<td class="${ok?'':'over'}">${dpTxt(r)}${ok?' ✓':''}</td>`}).join('')}</tr>`).join('');
  return `<div class="rc"><div class="rch"><h3><span class="mk ${s.mk}">${s.mk==='E'?'エドワーズ':'泉工医科'}</span>${esc(s.name)}</h3>${imgTag(s.img,'sm')}</div>${lines}<details style="background:none;padding:0;margin-top:4px"><summary style="font-size:13px;min-height:32px;color:var(--mute)">全サイズのΔP（mmHg）</summary><table>${head}${body}</table></details></div>`;
 }
 function opts(group,sel){return '<option value="">選択してください</option>'+SERIES[group].map(s=>`<optgroup label="${s.mk==='E'?'エドワーズ':'泉工医科'}｜${esc(s.name)}">${s.it.map(([c,sz])=>`<option value="${esc(c)}"${c===sel?' selected':''}>${sz}　${esc(label(c))}｜${esc(s.prod)}</option>`).join('')}</optgroup>`).join('')}
@@ -677,18 +676,18 @@ for(const [id,[g]] of Object.entries(SEL)){$(id).innerHTML=opts(g,'');$(id).addE
 function nice(v){const p=Math.pow(10,Math.floor(Math.log10(v))),m=v/p;return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p}
 function chartSVG(code,q,lim,col){
  const c=CURVES[code];if(!c)return '';const L=c.p[c.p.length-1],qm=qmax(code,lim),r=dp(code,q);
- const xm=Math.min(10,Math.ceil(Math.max(L[0],(q||0)*1.15,qm?qm.q*1.05:0)*2)/2),yv=Math.max(lim*1.2,r&&!r.over?r.v*1.1:0,c.top?c.ym:L[1]);
+ const xm=L[0],yv=Math.max(lim*1.2,r&&!r.over&&!r.out?r.v*1.1:0,c.top?c.ym:L[1]);
  const ys=nice(yv/5),ym=Math.ceil(yv/ys)*ys;
  const W=330,H=210,l=40,b=30,t=24,rr=12,X=x=>l+x/xm*(W-l-rr),Y=y=>H-b-Math.min(y,ym)/ym*(H-b-t);
  let g='';
  for(let y=0;y<=ym+1e-9;y+=ys)g+=`<line x1="${l}" x2="${W-rr}" y1="${Y(y)}" y2="${Y(y)}" stroke="var(--line)"/><text x="${l-6}" y="${Y(y)+4}" text-anchor="end" font-size="12" style="fill:var(--mute)">${+y.toFixed(1)}</text>`;
  const xs=xm<=3?0.5:1;for(let x=0;x<=xm+1e-9;x+=xs)g+=`<text x="${X(x)}" y="${H-b+16}" text-anchor="middle" font-size="12" style="fill:var(--mute)">${+x.toFixed(1)}</text>`;
- const meas=[],est=[];for(let i=0;i<=120;i++){const x=xm*i/120,rv=dp(code,x);if(!rv||rv.over)break;(x<=L[0]?meas:est).push(`${X(x).toFixed(1)},${Y(rv.v).toFixed(1)}`);if(rv.v>ym)break}
- if(est.length&&meas.length)est.unshift(meas[meas.length-1]);
- let o=`<polyline points="${meas.join(' ')}" fill="none" stroke="${col}" stroke-width="3" stroke-linejoin="round"/>`+(est.length?`<polyline points="${est.join(' ')}" fill="none" stroke="${col}" stroke-width="2.5" stroke-dasharray="5 5"/>`:'');
+ const meas=c.p.map(([x,y])=>`${X(x).toFixed(1)},${Y(y).toFixed(1)}`);
+ let o=`<polyline points="${meas.join(' ')}" fill="none" stroke="${col}" stroke-width="3" stroke-linejoin="round"/>`;
  if(lim<=ym)o+=`<line x1="${l}" x2="${W-rr}" y1="${Y(lim)}" y2="${Y(lim)}" stroke="#e8a33d" stroke-width="2" stroke-dasharray="6 4"/><text x="${l+4}" y="${Y(lim)-5}" font-size="12" font-weight="700" style="fill:#c98316">上限 ${lim}</text>`;
  if(qm&&!qm.ge&&qm.q<=xm)o+=`<path d="M${X(qm.q)} ${Y(lim)-7}l7 7-7 7-7-7z" fill="#e8a33d" stroke="var(--card)" stroke-width="1.5"/>`;
- if(r&&q>0){const py=r.over?Y(ym):Y(r.v),px=X(Math.min(q,xm));
+ if(r&&q>0&&(r.out||r.over)){o+=`<text x="${W-rr}" y="12" text-anchor="end" font-size="12.5" font-weight="700" style="fill:var(--red);paint-order:stroke;stroke:var(--card2);stroke-width:4px">${f(q,2)} L/min はグラフ範囲外（〜${f(xm,2)}）</text>`}
+ if(r&&q>0&&!r.out&&!r.over){const py=Y(r.v),px=X(Math.min(q,xm));
   o+=`<line x1="${px}" x2="${px}" y1="${H-b}" y2="${py}" stroke="${col}" stroke-dasharray="2 4" opacity=".7"/><circle cx="${px}" cy="${py}" r="9" fill="${col}" opacity=".22"/><circle cx="${px}" cy="${py}" r="5.5" fill="${col}" stroke="var(--card)" stroke-width="2"/>`;
   const txt=`${f(q,2)} L/min・ΔP ${dpTxt(r)}`,right=px>W*0.55;
   const ly=Y(lim),up=Math.max(py-12,t+12),dn=Math.min(py+22,H-b-6),yy=(Math.abs(up-4-ly)>14||Math.abs(dn-4-ly)<=14)?up:dn;
@@ -698,7 +697,7 @@ function chartSVG(code,q,lim,col){
 function detail(role,code,q,lim,col){
  const {sz,s}=sizeOf(code),r=dp(code,q),qm=qmax(code,lim);
  return `<div class="cd"><div class="cdh">${imgTag(s.img)}<div><div class="role" style="color:${col}">${role}</div><span class="mk ${s.mk}">${s.mk==='E'?'エドワーズ':'泉工医科'}</span><div class="pn">${esc(s.prod)}</div><div class="cc"><b>${sz}</b> ${esc(label(code))}</div></div></div>
-  <div class="kv"><div><span>流量</span><b>${f(q,2)}</b> L/min</div><div><span>ΔP</span><b>${dpTxt(r)}</b> mmHg</div><div><span>最大流量</span><b>${qTxt(qm)}</b> L/min${qm&&qm.est?'（推定）':''}</div></div>
+  <div class="kv"><div><span>流量</span><b>${f(q,2)}</b> L/min</div><div><span>ΔP</span><b>${dpTxt(r)}</b> mmHg</div><div><span>最大流量</span><b>${qTxt(qm)}</b> L/min${qm&&qm.ge?'（グラフ上限）':''}</div></div>
   ${chartSVG(code,q,lim,col)}</div>`;
 }
 const cl=c=>c?sizeOf(c).sz+' '+label(c):'未選択';
@@ -731,20 +730,20 @@ function renderCombo(){
  $('circ').innerHTML=circuit(m,a,d,s,i);
  const qa=a?qmax(a,la):null;let qv=null,vtxt;
  if(m==='dual'){qv=d?qmax(d,lv):null;vtxt='脱血（二段）'}
- else{const q1=s?qmax(s,lv):null,q2=i?qmax(i,lv):null;qv=q1&&q2?{q:q1.q+q2.q,ge:q1.ge||q2.ge,est:q1.est||q2.est}:null;vtxt=`脱血（SVC ${qTxt(q1)}＋IVC ${qTxt(q2)}）`}
+ else{const q1=s?qmax(s,lv):null,q2=i?qmax(i,lv):null;qv=q1&&q2?{q:q1.q+q2.q,ge:q1.ge||q2.ge}:null;vtxt=`脱血（SVC ${qTxt(q1)}＋IVC ${qTxt(q2)}）`}
  const tg=n('cnFlow'),sv=Math.min(Math.max(n('cnSvc'),0),100)/100,RED='#d0213c',BLU='#2a63d8';
  const cards=[a&&detail('送血',a,tg,la,RED)];
  if(m==='dual')cards.push(d&&detail('脱血（二段）',d,tg,lv,BLU));
  else cards.push(s&&detail(`SVC 脱血（流量の${Math.round(sv*100)}%）`,s,tg*sv,lv,BLU),i&&detail(`IVC 脱血（流量の${Math.round(100-sv*100)}%）`,i,tg*(1-sv),lv,BLU));
  $('cdet').innerHTML=cards.filter(Boolean).join('')||'<p class="note">カニューレを選ぶと、商品名・画像・圧損グラフを表示します。</p>';
  const mx=Math.max(qa?qa.q:0,qv?qv.q:0,tg||0)*1.1||1;
- const bar=(cls,txt,r)=>`<div><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-bottom:4px"><span>${txt}</span><b class="dp">${r?(r.ge?'≥ ':'')+f(r.q,2)+' L/min'+(r.est?'（推定）':''):'未選択'}</b></div><div class="bar ${cls}"><i style="width:${r?Math.min(100,r.q/mx*100):0}%"></i>${tg>0&&r?`<div class="tg" style="left:${Math.min(99,tg/mx*100)}%"></div>`:''}</div></div>`;
+ const bar=(cls,txt,r)=>`<div><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-bottom:4px"><span>${txt}</span><b class="dp">${r?(r.ge?'≥ ':'')+f(r.q,2)+' L/min'+(r.ge?'（グラフ上限）':''):'未選択'}</b></div><div class="bar ${cls}"><i style="width:${r?Math.min(100,r.q/mx*100):0}%"></i>${tg>0&&r?`<div class="tg" style="left:${Math.min(99,tg/mx*100)}%"></div>`:''}</div></div>`;
  const bars=bar('a',`送血（ΔP ${la}）`,qa)+bar('b',vtxt.replace('脱血',`脱血 ΔP ${lv}`),qv);
  if(!qa||!qv){$('maxq').innerHTML=`<p class="note" style="margin:0">送血と脱血のカニューレを選ぶと、組み合わせの最大流量を表示します。</p>${bars}`;return}
  const sys=Math.min(qa.q,qv.q),bott=qa.q<=qv.q?'送血側':'脱血側',ok=tg>0&&sys>=tg,sysGe=(qa.q<=qv.q?qa:qv).ge;
  $('maxq').innerHTML=`<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="note" style="margin:0">この組み合わせの最大流量</span><span style="font:700 clamp(34px,9vw,48px)/1 var(--num);color:var(--red)">${sysGe?'≥ ':''}${f(sys,2)}<span style="font-size:15px;color:var(--mute);margin-left:4px">L/min</span></span><span class="note" style="margin:0">律速：${bott}</span></div>
   ${bars}
-  ${tg>0?`<div class="verdict ${ok?'ok':'ng'}">${ok?'✓':'!'} 目標 ${f(tg,2)} L/min に対して ${ok?'余裕 '+f(sys-tg,2)+' L/min':f(tg-sys,2)+' L/min 不足'}（黒い線が目標）</div>`:''}`;
+  ${tg>0?(!ok&&sysGe?`<div class="verdict ng">! 目標 ${f(tg,2)} L/min はカタログのグラフ範囲（${bott}：〜${f(sys,2)} L/min）を超えるため判定できません</div>`:`<div class="verdict ${ok?'ok':'ng'}">${ok?'✓':'!'} 目標 ${f(tg,2)} L/min に対して ${ok?'余裕 '+f(sys-tg,2)+' L/min':f(tg-sys,2)+' L/min 不足'}（黒い線が目標）</div>`):''}`;
 }
 function renderCan(){
  const auto=$('cnAuto').checked,m=store.get('cnMode','dual'),mk=store.get('cnMk','all');
